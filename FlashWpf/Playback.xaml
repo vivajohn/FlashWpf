@@ -1,0 +1,60 @@
+﻿<Page x:Class="FlashWpf.Playback"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:FlashWpf" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      VerticalAlignment="Stretch"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Background="#434343"
+      Title="Playback">
+    <DockPanel Background="#434343" VerticalAlignment="Stretch">
+        <StackPanel DockPanel.Dock="Top" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,8,8,8">
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
+                <Label Content="{Binding labelText}" Height="29" Width="Auto" Foreground="White" Margin="0,0,8,0" />
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Click="Navigate_Click" IsEnabled="{Binding IsNotPlaying}" Height="42" Width="42"
+                            ToolTip="To recording page" Background="#ffeb3b" BorderBrush="Transparent">
+                    <materialDesign:PackIcon Kind="Microphone" Height="24" Width="24" Foreground="#000000" />
+                </Button>
+            </StackPanel>
+        </StackPanel>
+
+        <Grid DockPanel.Dock="Top" VerticalAlignment="Top" Background="Black" Height="Auto">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100" />
+                <RowDefinition Height="100" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+
+            <Button Grid.Row="0" Grid.Column="1" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="Prompt_Click" Height="56" Width="56"
+                            ToolTip="Play prompt" Background="#ffeb3b" BorderBrush="Transparent">
+                <materialDesign:PackIcon Kind="PlayArrow" Height="24" Width="24" Foreground="#000000" />
+            </Button>
+            <Button Grid.Row="0" Grid.Column="5" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="Response_Click"
+                            ToolTip="Play response" Background="#ffeb3b" BorderBrush="Transparent">
+                <materialDesign:PackIcon Kind="PlayArrow" Height="24" Width="24" Foreground="#000000" />
+            </Button>
+
+            <Button Grid.Row="1" Grid.Column="2" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="ThumbsDown_Click"
+                            Background="#ffeb3b" BorderBrush="Transparent">
+                <materialDesign:PackIcon Kind="ThumbDown" Height="24" Width="24" Foreground="#000000" />
+            </Button>
+            <Button Grid.Row="1" Grid.Column="4" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="ThumbsUp_Click"
+                            Background="#ffeb3b" BorderBrush="Transparent">
+                <materialDesign:PackIcon Kind="ThumbUp" Height="24" Width="24" Foreground="#000000" />
+            </Button>
+        </Grid>
+
+    </DockPanel>
+
+</Page>
