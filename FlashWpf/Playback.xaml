@@ -12,7 +12,7 @@
     <DockPanel Background="#434343" VerticalAlignment="Stretch">
         <StackPanel DockPanel.Dock="Top" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,8,8,8">
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Right">
-                <Label Content="{Binding labelText}" Height="29" Width="Auto" Foreground="White" Margin="0,0,8,0" />
+                <!--<Label Content="{Binding labelText}" Height="29" Width="Auto" Foreground="White" Margin="0,0,8,0" />-->
                 <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Click="Navigate_Click" IsEnabled="{Binding IsNotPlaying}" Height="42" Width="42"
                             ToolTip="To recording page" Background="#ffeb3b" BorderBrush="Transparent">
                     <materialDesign:PackIcon Kind="Microphone" Height="24" Width="24" Foreground="#000000" />
