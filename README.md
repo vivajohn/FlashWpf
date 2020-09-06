@@ -7,6 +7,3 @@ out of that project and put it in a library, which I can use for both projects.
 
 ![Image of playback page](https://github.com/vivajohn/FlashWpf/blob/master/FlashWpf/screenshots/record.png)
 
-
-
-FlashWpf/FlashWpf/screenshots/
