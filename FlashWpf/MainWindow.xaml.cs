@@ -11,7 +11,7 @@ namespace FlashWpf
         public MainWindow()
         {
             InitializeComponent();
-            Main.NavigationService.Navigate(new Uri("Playback.xaml", UriKind.Relative));
+            Main.NavigationService.Navigate(new Uri("Record.xaml", UriKind.Relative));
         }
     }
 }

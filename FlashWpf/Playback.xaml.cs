@@ -13,10 +13,12 @@ using System.Windows.Navigation;
 namespace FlashWpf
 {
     /// <summary>
-    /// Interaction logic for Playback.xaml
+    /// Plays pack the prompt and response recordings
     /// </summary>
     public partial class Playback : Page
     {
+
+        // Private class for managing data for the DataContext
         private class PageData : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -35,7 +37,6 @@ namespace FlashWpf
                 set
                 {
                     _labelText = value;
-                    // Call OnPropertyChanged whenever the property is updated
                     OnPropertyChanged();
                 }
             }
@@ -47,7 +48,6 @@ namespace FlashWpf
                 set
                 {
                     _IsNotPlaying = value;
-                    // Call OnPropertyChanged whenever the property is updated
                     OnPropertyChanged();
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("dbug"));
                 }
@@ -72,7 +72,6 @@ namespace FlashWpf
                     SetRecordings(recs);
                 });
             });
-            //SetRecordings();
         }
 
         public void Navigate_Click(object sender, RoutedEventArgs e)
@@ -84,25 +83,9 @@ namespace FlashWpf
 
         private void SetRecordings(FirestoreBlob[] recs)
         {
-            //Stop(0);
-            //Stop(1);
-            //pageData.labelText = "loading...";
-
             SetRecording(0, recs[0]);
             SetRecording(1, recs[1]);
             pageData.labelText = mgr.CurrentPair.prompts[0].text;
-
-            // IObservable<TSource> FirstAsync<TSource>(this IObservable<TSource> source);
-            // IEnumerable<TSource> Latest<TSource>(this IObservable<TSource> source);
-            // IObservable<TSource> TakeLast<TSource>(this IObservable<TSource> source, int count);
-            //mgr.Recordings.FirstAsync().Subscribe(recs => {
-            //    Dispatcher.Invoke(() =>
-            //    {
-            //        SetRecording(0, recs[0]);
-            //        SetRecording(1, recs[1]);
-            //        pageData.labelText = mgr.CurrentPair.prompts[0].text;
-            //    });
-            //});
         }
 
         private void SetRecording(int i, FirestoreBlob blob)

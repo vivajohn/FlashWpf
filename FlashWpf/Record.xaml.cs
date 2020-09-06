@@ -10,7 +10,7 @@ using System.Windows.Navigation;
 namespace FlashWpf
 {
     /// <summary>
-    /// Interaction logic for Record.xaml
+    /// Page for creating and recording prompts and responses
     /// </summary>
     public partial class Record : Page
     {
@@ -62,9 +62,9 @@ namespace FlashWpf
         // The user has clicked on the top-level card
         // If opening, get the data from the database or from the dictionary
         // if it has already been read.
-        private void Card_Click(object sender, MouseButtonEventArgs e)
+        private void OnCardOpen(object sender, RoutedEventArgs e)
         {
-            var card = sender as MaterialDesignThemes.Wpf.Card;
+            var card = sender as Expander;
             var ds = card.DataContext as DeckSource;
 
             if (!cache.ContainsKey(ds.deck.id))
@@ -85,8 +85,7 @@ namespace FlashWpf
                 cache[ds.deck.id].ForEach(pair => ds.pairs.Add(pair));
                 return;
             }
-
-            ds.pairs.Clear();
         }
+
     }
 }

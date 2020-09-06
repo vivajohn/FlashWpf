@@ -17,9 +17,8 @@
         </Grid.RowDefinitions>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,0,8,0">
-            <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Click="Navigate_Click" Height="42" Width="42"
-                        ToolTip="To playback page" Background="#ffeb3b" BorderBrush="Transparent">
-                <materialDesign:PackIcon Kind="RecordVoiceOver" Height="24" Width="24" Foreground="#000000" />
+            <Button Click="Navigate_Click" Height="42" Width="42" ToolTip="To playback page">
+                <materialDesign:PackIcon Kind="RecordVoiceOver" Height="24" Width="24" />
             </Button>
         </StackPanel>
 
@@ -31,34 +30,27 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border Padding="8,8,8,8">
-                        <materialDesign:Card MinHeight="60" MouseUp="Card_Click" Margin="0,0,0,0" Background="#F2F2F2">
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding name}" FontWeight="Bold" Margin="8,8,0,0" />
-                                <ListView ItemsSource="{Binding pairs}">
-                                    <ListView.ItemContainerStyle>
-                                        <Style TargetType="ListViewItem">
-                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        </Style>
-                                    </ListView.ItemContainerStyle>
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Padding="16,8,8,8">
-                                                <materialDesign:Card>
-                                                    <Border Padding="8,8,8,8">
-                                                        <StackPanel Orientation="Vertical">
-                                                            <TextBlock Text="{Binding prompts[0].text}" />
-                                                            <TextBlock Text="{Binding prompts[1].text}" />
-                                                        </StackPanel>
-                                                    </Border>
-                                                </materialDesign:Card>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </StackPanel>
-                        </materialDesign:Card>
-                    </Border>
+                    <materialDesign:Card MinHeight="60" Background="#F2F2F2">
+                        <Expander HorizontalAlignment="Stretch" Expanded="OnCardOpen">
+                            <Expander.Header>
+                                <TextBlock Text="{Binding name}" FontSize="24"></TextBlock>
+                            </Expander.Header>
+                            <ListView ItemsSource="{Binding pairs}">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="16,8,8,8">
+                                            <local:PromptsCard Pair="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}"></local:PromptsCard>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Expander>
+                    </materialDesign:Card>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

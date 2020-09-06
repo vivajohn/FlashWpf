@@ -3,7 +3,8 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:FlashWpf" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:local="clr-namespace:FlashWpf" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       VerticalAlignment="Stretch"
       d:DesignHeight="450" d:DesignWidth="800"
@@ -15,9 +16,8 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,0,8,0" Height="72" VerticalAlignment="Top">
             <!--<Label Content="{Binding labelText}" Height="29" Width="Auto" Foreground="White" Margin="0,0,8,0" />-->
-            <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Click="Navigate_Click" IsEnabled="{Binding IsNotPlaying}" Height="42" Width="42"
-                        ToolTip="To recording page" Background="#ffeb3b" BorderBrush="Transparent">
-                <materialDesign:PackIcon Kind="Microphone" Height="24" Width="24" Foreground="#000000" />
+            <Button Click="Navigate_Click" IsEnabled="{Binding IsNotPlaying}" Height="42" Width="42" ToolTip="To recording page">
+                <materialDesign:PackIcon Kind="Microphone" Height="24" Width="24" />
             </Button>
         </StackPanel>
 
@@ -74,22 +74,18 @@
                 </Grid.ColumnDefinitions>
 
 
-                <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="Prompt_Click" Height="52" Width="52"
-                                ToolTip="Play prompt" Background="#ffeb3b" BorderBrush="Transparent">
-                    <materialDesign:PackIcon Kind="PlayArrow" Height="26" Width="26" Foreground="#000000" />
+                <Button Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Click="Prompt_Click" ToolTip="Play prompt">
+                    <materialDesign:PackIcon Kind="PlayArrow" />
                 </Button>
-                <Button Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="Response_Click" Height="52" Width="52"
-                                ToolTip="Play response" Background="#ffeb3b" BorderBrush="Transparent">
-                    <materialDesign:PackIcon Kind="PlayArrow" Height="26" Width="26" Foreground="#000000" />
+                <Button Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Click="Response_Click" ToolTip="Play response">
+                    <materialDesign:PackIcon Kind="PlayArrow" />
                 </Button>
 
-                <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="ThumbsDown_Click" Height="52" Width="52"
-                                Background="#ffeb3b" BorderBrush="Transparent">
-                    <materialDesign:PackIcon Kind="ThumbDown" Height="26" Width="26" Foreground="#000000" />
+                <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Click="ThumbsDown_Click">
+                    <materialDesign:PackIcon Kind="ThumbDown" />
                 </Button>
-                <Button Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionButton}" Click="ThumbsUp_Click" Height="52" Width="52"
-                                Background="#ffeb3b" BorderBrush="Transparent">
-                    <materialDesign:PackIcon Kind="ThumbUp" Height="26" Width="26" Foreground="#000000" />
+                <Button Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" Click="ThumbsUp_Click">
+                    <materialDesign:PackIcon Kind="ThumbUp" />
                 </Button>
             </Grid>
         </Grid>
