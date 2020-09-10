@@ -24,7 +24,7 @@
         <TextBox Grid.Row="0" Grid.Column="1" materialDesign:HintAssist.Hint="{Binding Hint}"
                         Text="{Binding Prompt.text}" FontWeight="Normal"
                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                        VerticalAlignment="Center" />
+                        VerticalAlignment="Center" TextChanged="OnTextChanged" />
 
         <Button Grid.Row="1" Grid.Column="1" ToolTip="Record" HorizontalAlignment="Left" Margin="0,12,0,0">
             <materialDesign:PackIcon Kind="Microphone" />

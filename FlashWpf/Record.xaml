@@ -9,6 +9,9 @@
       d:DesignHeight="300" d:DesignWidth="400"
       Background="#434343"
       Title="Record">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -31,9 +34,19 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <materialDesign:Card MinHeight="60" Background="#F2F2F2">
-                        <Expander HorizontalAlignment="Stretch" Expanded="OnCardOpen">
+                        <Expander x:Name="expDeck" HorizontalAlignment="Stretch" Expanded="OnCardOpen">
                             <Expander.Header>
-                                <TextBlock Text="{Binding name}" FontSize="24"></TextBlock>
+                                <Grid HorizontalAlignment="Stretch">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding name}" FontSize="24"></TextBlock>
+                                    </StackPanel>
+                                    <Grid HorizontalAlignment="Right">
+                                        <Button ToolTip="Add new prompt-response pair"
+                                                Visibility="{Binding Path=IsExpanded, ElementName=expDeck, Converter={StaticResource VisibleIfTrueConverter}}" Click="OnAddClick">
+                                            <materialDesign:PackIcon Kind="Add"/>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
                             </Expander.Header>
                             <ListView ItemsSource="{Binding pairs}">
                                 <ListView.ItemContainerStyle>

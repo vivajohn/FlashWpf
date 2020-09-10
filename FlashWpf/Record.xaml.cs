@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,8 +30,9 @@ namespace FlashWpf
             }
         }
 
-        private FirebaseService fb = new FirebaseService();
         private Dictionary<long, List<PromptResponsePair>> cache = new Dictionary<long, List<PromptResponsePair>>();
+        private FirebaseService fb = new FirebaseService();
+        private Topic currentTopic;
 
         public Record()
         {
@@ -43,7 +45,9 @@ namespace FlashWpf
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        var decks = topics[0].decks;
+                        // TODO: Assuming current deck is first in list
+                        currentTopic = topics[0];
+                        var decks = currentTopic.decks;
                         var source = new List<DeckSource>(decks.Count);
                         decks.ForEach(deck => {
                             source.Add(new DeckSource(deck));
@@ -69,6 +73,7 @@ namespace FlashWpf
 
             if (!cache.ContainsKey(ds.deck.id))
             {
+                var fb = new FirebaseService();
                 fb.GetPairs(Globals.uid, ds.deck).Subscribe(pairs =>
                 {
                     Dispatcher.Invoke(() =>
@@ -87,5 +92,15 @@ namespace FlashWpf
             }
         }
 
+        private void OnAddClick(object sender, RoutedEventArgs e)
+        {
+            var ds = (sender as Button).DataContext as DeckSource;
+            var pair = currentTopic.CreatePromptResponsePair(ds.deck);
+            ds.pairs.Insert(0, pair);
+            fb.SaveTopics(currentTopic).Subscribe();
+            fb.SavePromptPairs(ds.deck.groups).Subscribe();
+
+            Debug.WriteLine("OnAddClick");
+        }
     }
 }

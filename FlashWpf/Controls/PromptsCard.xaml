@@ -12,7 +12,7 @@
     </UserControl.Resources>
     <Grid>
         <materialDesign:Card>
-            <Expander x:Name="exp" HorizontalAlignment="Stretch">
+            <Expander x:Name="expCard" HorizontalAlignment="Stretch">
                 <Expander.Header>
                     <Grid HorizontalAlignment="Stretch">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -22,16 +22,16 @@
                         </StackPanel>
                         <Grid HorizontalAlignment="Right">
                             <Button ToolTip="Delete"
-                                    Visibility="{Binding Path=IsExpanded, ElementName=exp, Converter={StaticResource VisibleIfTrueConverter}}">
+                                    Visibility="{Binding Path=IsExpanded, ElementName=expCard, Converter={StaticResource VisibleIfTrueConverter}}">
                                 <materialDesign:PackIcon Kind="GarbageCan"/>
                             </Button>
                         </Grid>
                     </Grid>
                 </Expander.Header>
                 <StackPanel Orientation="Vertical" Margin="24,0,24,24">
-                    <local:PromptBox Hint="Prompt" 
+                    <local:PromptBox Hint="Prompt" TextChanged="OnTextChanged"
                                      Prompt="{Binding Pair.prompts[0], RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PromptsCard}}"></local:PromptBox>
-                    <local:PromptBox Hint="Response" Margin="0,16,0,0"
+                    <local:PromptBox Hint="Response" Margin="0,16,0,0" TextChanged="OnTextChanged"
                                      Prompt="{Binding Pair.prompts[1], RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PromptsCard}}"></local:PromptBox>
                 </StackPanel>
             </Expander>

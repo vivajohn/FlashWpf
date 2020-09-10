@@ -1,6 +1,9 @@
 ﻿using FlashCommon;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +22,7 @@ namespace FlashWpf
     /// </summary>
     public partial class PromptBox : UserControl
     {
+
         public PromptBox()
         {
             InitializeComponent();
@@ -51,6 +55,29 @@ namespace FlashWpf
                   typeof(string),
                   typeof(PromptBox)
               );
+
+
+        public static readonly RoutedEvent TextChangedEvent = EventManager.RegisterRoutedEvent(
+            "TextChanged",
+            RoutingStrategy.Bubble,
+            typeof(RoutedEventHandler),
+            typeof(PromptBox));
+
+        public event RoutedEventHandler TextChanged
+        {
+            add { AddHandler(TextChangedEvent, value); }
+            remove { RemoveHandler(TextChangedEvent, value); }
+        }
+
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var t = sender as TextBox;
+            if (t.IsLoaded) {
+                Prompt.text = t.Text;
+                var newEventArgs = new RoutedEventArgs(TextChangedEvent);
+                RaiseEvent(newEventArgs);
+            }
+        }
 
     }
 }
