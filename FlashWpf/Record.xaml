@@ -19,11 +19,19 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,0,8,0">
-            <Button Click="Navigate_Click" Height="42" Width="42" ToolTip="To playback page">
-                <materialDesign:PackIcon Kind="RecordVoiceOver" Height="24" Width="24" />
-            </Button>
-        </StackPanel>
+        <Grid HorizontalAlignment="Stretch" Margin="8,0,8,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button HorizontalAlignment="Right" Height="42" Width="42" ToolTip="To playback page" Click="OnToggleDB">
+                    <materialDesign:PackIcon Kind="ToggleSwitch" Height="24" Width="24" />
+                </Button>
+                <TextBlock VerticalAlignment="Center" Margin="8,0,8,0" Foreground="White" Text="{Binding DBName[0]}"></TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button HorizontalAlignment="Right" Click="Navigate_Click" Height="42" Width="42" ToolTip="To playback page">
+                    <materialDesign:PackIcon Kind="RecordVoiceOver" Height="24" Width="24" />
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <ListView Grid.Row="1" x:Name="DecksList">
             <ListView.ItemContainerStyle>
@@ -57,7 +65,9 @@
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Padding="16,8,8,8">
-                                            <local:PromptsCard Pair="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}"></local:PromptsCard>
+                                            <local:PromptsCard 
+                                                Delete="OnDelete"
+                                                Pair="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}"></local:PromptsCard>
                                         </Border>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>

@@ -1,4 +1,5 @@
 ﻿using FlashCommon;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +16,7 @@ namespace FlashWpf
     /// </summary>
     public partial class Record : Page
     {
-        // Used for data binding in the xaml code
+        // Used for data binding in the ListView in the xaml code
         private class DeckSource 
         {
             public string name { get; set; }
@@ -30,32 +31,42 @@ namespace FlashWpf
             }
         }
 
-        private Dictionary<long, List<PromptResponsePair>> cache = new Dictionary<long, List<PromptResponsePair>>();
-        private FirebaseService fb = new FirebaseService();
+        private Dictionary<long, List<PromptResponsePair>> cache;
+        private IDatabase fb;
         private Topic currentTopic;
+        public ObservableCollection<string> DBName { get; } = new ObservableCollection<string>();
 
         public Record()
         {
             InitializeComponent();
+            DataContext = this;
 
-            // Get the top-level data
-            fb.GetTopics(Globals.uid).Subscribe(topics =>
-            {
-                if (topics.Length > 0)
+            var ddb = ServiceLocator.GetInstance<IDynamicDB>();
+            ddb.CurrentDB.Subscribe(fb => {
+                // Get the top-level data
+                this.fb = fb;
+                cache = new Dictionary<long, List<PromptResponsePair>>();
+                DBName.Clear();
+                DBName.Add(fb.Name);
+                fb.GetTopics(Globals.uid).Subscribe(topics =>
                 {
-                    Dispatcher.Invoke(() =>
+                    if (topics.Count > 0)
                     {
-                        // TODO: Assuming current deck is first in list
-                        currentTopic = topics[0];
-                        var decks = currentTopic.decks;
-                        var source = new List<DeckSource>(decks.Count);
-                        decks.ForEach(deck => {
-                            source.Add(new DeckSource(deck));
+                        Dispatcher.Invoke(() =>
+                        {
+                            // TODO: Assuming current topic is first in list
+                            currentTopic = topics[0];
+                            var decks = currentTopic.decks;
+                            var source = new List<DeckSource>(decks.Count);
+                            decks.ForEach(deck => {
+                                source.Add(new DeckSource(deck));
+                            });
+                            DecksList.ItemsSource = source;
                         });
-                        DecksList.ItemsSource = source;
-                    });
-                }
+                    }
+                });
             });
+
         }
 
         public void Navigate_Click(object sender, RoutedEventArgs e) 
@@ -73,7 +84,6 @@ namespace FlashWpf
 
             if (!cache.ContainsKey(ds.deck.id))
             {
-                var fb = new FirebaseService();
                 fb.GetPairs(Globals.uid, ds.deck).Subscribe(pairs =>
                 {
                     Dispatcher.Invoke(() =>
@@ -92,15 +102,43 @@ namespace FlashWpf
             }
         }
 
+        // Delete a prompt-reponse pair. The confirmation question has already been answered.
+        private void OnDelete(object sender, RoutedEventArgs e)
+        {
+            var pair = (sender as PromptsCard).Pair;
+            var list = DecksList.ItemsSource as List<DeckSource>;
+            var source = list.Find(s => s.deck.id == pair.deckId);
+            var deck = source.deck;
+            deck.groups.Remove(pair);
+            deck.numPairs -= 1;
+
+            source.pairs.Remove(pair);
+            fb.DeletePair(pair).Subscribe();
+            fb.SaveTopic(currentTopic);
+        }
+
+        // Add a new prompt-reponse pair.
         private void OnAddClick(object sender, RoutedEventArgs e)
         {
             var ds = (sender as Button).DataContext as DeckSource;
             var pair = currentTopic.CreatePromptResponsePair(ds.deck);
             ds.pairs.Insert(0, pair);
-            fb.SaveTopics(currentTopic).Subscribe();
+            fb.SaveTopic(currentTopic).Subscribe();
             fb.SavePromptPairs(ds.deck.groups).Subscribe();
+        }
 
-            Debug.WriteLine("OnAddClick");
+        // Toggle the database between Azure and Firebase
+        private void OnToggleDB(object sender, RoutedEventArgs e)
+        {
+            var ddb = ServiceLocator.GetInstance<IDynamicDB>();
+            if (fb.Name == "Azure")
+            {
+                ddb.SetCurrentDB(new FirebaseService());
+            }
+            else
+            {
+                ddb.SetCurrentDB(new AzureService());
+            }
         }
     }
 }

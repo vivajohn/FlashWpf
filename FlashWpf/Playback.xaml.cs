@@ -49,7 +49,17 @@ namespace FlashWpf
                 {
                     _IsNotPlaying = value;
                     OnPropertyChanged();
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("dbug"));
+                }
+            }
+
+            private bool _HasRecordings = false;
+            public bool HasRecordings
+            {
+                get { return _HasRecordings; }
+                set
+                {
+                    _HasRecordings = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -64,12 +74,17 @@ namespace FlashWpf
         {
             InitializeComponent();
             DataContext = pageData;
-            mgr = new PlaybackMgr(Globals.uid);
-            mgr.Recordings.Subscribe(recs =>
+
+            var ddb = ServiceLocator.GetInstance<IDynamicDB>();
+            ddb.CurrentDB.Subscribe(db =>
             {
-                Dispatcher.Invoke(() =>
+                mgr = new PlaybackMgr(Globals.uid, db);
+                mgr.Recordings.Subscribe(recs =>
                 {
-                    SetRecordings(recs);
+                    Dispatcher.Invoke(() =>
+                    {
+                        SetRecordings(recs);
+                    });
                 });
             });
         }
@@ -83,6 +98,11 @@ namespace FlashWpf
 
         private void SetRecordings(FirestoreBlob[] recs)
         {
+            pageData.HasRecordings = recs.Length > 0;
+            if (!pageData.HasRecordings)
+            {
+                return;
+            }
             SetRecording(0, recs[0]);
             SetRecording(1, recs[1]);
             pageData.labelText = mgr.CurrentPair.prompts[0].text;

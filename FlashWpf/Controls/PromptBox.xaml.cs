@@ -74,8 +74,7 @@ namespace FlashWpf
             var t = sender as TextBox;
             if (t.IsLoaded) {
                 Prompt.text = t.Text;
-                var newEventArgs = new RoutedEventArgs(TextChangedEvent);
-                RaiseEvent(newEventArgs);
+                RaiseEvent(new RoutedEventArgs(TextChangedEvent));
             }
         }
 

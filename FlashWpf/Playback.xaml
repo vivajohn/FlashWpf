@@ -62,7 +62,8 @@
                 </Viewbox>
             </StackPanel>
                 
-            <Grid DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Transparent" Height="Auto">
+            <Grid DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Transparent" Height="Auto"
+                         IsEnabled="{Binding HasRecordings}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="90" />
                     <RowDefinition Height="90" />

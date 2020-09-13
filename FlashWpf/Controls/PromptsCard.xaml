@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:FlashWpf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -11,30 +11,55 @@
         <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
     </UserControl.Resources>
     <Grid>
-        <materialDesign:Card>
-            <Expander x:Name="expCard" HorizontalAlignment="Stretch">
-                <Expander.Header>
-                    <Grid HorizontalAlignment="Stretch">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Pair.prompts[0].text}" MaxWidth="200" TextTrimming="CharacterEllipsis" FontSize="18" />
-                            <TextBlock Text=" - " FontSize="18" FontWeight="Bold" />
-                            <TextBlock Text="{Binding Pair.prompts[1].text}" MaxWidth="200" TextTrimming="CharacterEllipsis" FontSize="18" />
-                        </StackPanel>
-                        <Grid HorizontalAlignment="Right">
-                            <Button ToolTip="Delete"
-                                    Visibility="{Binding Path=IsExpanded, ElementName=expCard, Converter={StaticResource VisibleIfTrueConverter}}">
-                                <materialDesign:PackIcon Kind="GarbageCan"/>
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Expander.Header>
-                <StackPanel Orientation="Vertical" Margin="24,0,24,24">
-                    <local:PromptBox Hint="Prompt" TextChanged="OnTextChanged"
-                                     Prompt="{Binding Pair.prompts[0], RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PromptsCard}}"></local:PromptBox>
-                    <local:PromptBox Hint="Response" Margin="0,16,0,0" TextChanged="OnTextChanged"
-                                     Prompt="{Binding Pair.prompts[1], RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PromptsCard}}"></local:PromptBox>
+        <md:DialogHost x:Name="Dialog">
+            <md:DialogHost.DialogContent>
+                <!-- put your dialog content here-->
+                <StackPanel Orientation="Vertical" Margin="30,20,30,20">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="50">
+                        <md:PackIcon Kind="GarbageCan" Height="48" Width="48" />
+                        <md:PackIcon Kind="QuestionMark" Height="48" Width="48"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                        <Button ToolTip="Cancel" Margin="0,0,20,0"
+                                Visibility="{Binding Path=IsExpanded, ElementName=expCard, Converter={StaticResource VisibleIfTrueConverter}}"
+                                Command="{x:Static md:DialogHost.CloseDialogCommand}">
+                            <md:PackIcon Kind="Close"/>
+                        </Button>
+                        <Button ToolTip="Delete" Margin="20,0,0,0"
+                                Visibility="{Binding Path=IsExpanded, ElementName=expCard, Converter={StaticResource VisibleIfTrueConverter}}" 
+                                Click="OnDeleteClick">
+                            <md:PackIcon Kind="Check"/>
+                        </Button>
+                    </StackPanel>
                 </StackPanel>
-            </Expander>
-        </materialDesign:Card>
+            </md:DialogHost.DialogContent>
+            <!-- put the content over which the dialog is shown here (e.g. your main window grid)-->
+            <md:Card>
+                <Expander x:Name="expCard" HorizontalAlignment="Stretch">
+                    <Expander.Header>
+                        <Grid HorizontalAlignment="Stretch">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Pair.prompts[0].text}" MaxWidth="200" TextTrimming="CharacterEllipsis" FontSize="18" />
+                                <TextBlock Text=" - " FontSize="18" FontWeight="Bold" />
+                                <TextBlock Text="{Binding Pair.prompts[1].text}" MaxWidth="200" TextTrimming="CharacterEllipsis" FontSize="18" />
+                            </StackPanel>
+                            <Grid HorizontalAlignment="Right">
+                                <Button ToolTip="Delete"
+                                        Visibility="{Binding Path=IsExpanded, ElementName=expCard, Converter={StaticResource VisibleIfTrueConverter}}" 
+                                        Command="{x:Static md:DialogHost.OpenDialogCommand}">
+                                    <md:PackIcon Kind="GarbageCan"/>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Expander.Header>
+                    <StackPanel Orientation="Vertical" Margin="24,0,24,24">
+                        <local:PromptBox Hint="Prompt" TextChanged="OnTextChanged"
+                                         Prompt="{Binding Pair.prompts[0], RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PromptsCard}}"></local:PromptBox>
+                        <local:PromptBox Hint="Response" Margin="0,16,0,0" TextChanged="OnTextChanged"
+                                         Prompt="{Binding Pair.prompts[1], RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:PromptsCard}}"></local:PromptBox>
+                    </StackPanel>
+                </Expander>
+            </md:Card>
+        </md:DialogHost>
     </Grid>
 </UserControl>

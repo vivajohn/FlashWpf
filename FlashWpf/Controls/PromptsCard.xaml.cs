@@ -24,13 +24,13 @@ namespace FlashWpf
     public partial class PromptsCard : UserControl
     {
         private ReplaySubject<PromptResponsePair> bs;
-        //private FirebaseService fs = new FirebaseService();
+        private IDatabase fs;
 
         public PromptsCard()
         {
             InitializeComponent();
+            fs = ServiceLocator.GetInstance<IDatabase>();
             this.DataContext = this;
-
         }
 
         public PromptResponsePair Pair
@@ -56,13 +56,33 @@ namespace FlashWpf
                 bs.Throttle(new TimeSpan(0, 0, 1)).Subscribe(pair => {
                     Dispatcher.Invoke(() =>
                     {
-                        var fs = new FirebaseService();
                         fs.SavePromptPair(pair).Subscribe();
                     });
                 });
             }
             bs.OnNext(Pair);
         }
+
+
+        private void OnDeleteClick(object sender, RoutedEventArgs e)
+        {
+            Dialog.CurrentSession.Close();
+            RaiseEvent(new RoutedEventArgs(DeleteEvent));
+        }
+
+        public static readonly RoutedEvent DeleteEvent = EventManager.RegisterRoutedEvent(
+            "Delete",
+            RoutingStrategy.Bubble,
+            typeof(RoutedEventHandler),
+            typeof(PromptsCard));
+
+        public event RoutedEventHandler Delete
+        {
+            add { AddHandler(DeleteEvent, value); }
+            remove { RemoveHandler(DeleteEvent, value); }
+        }
+
+
     }
 
 }
