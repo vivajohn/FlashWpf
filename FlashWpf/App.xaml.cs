@@ -17,6 +17,9 @@ namespace FlashWpf
     {
         public App()
         {
+            Cosmos.Endpoint = Secret.Endpoint;
+            Cosmos.AuthKey = Secret.AuthKey;
+
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             ServiceLocator.Init(serviceCollection.BuildServiceProvider());
