@@ -21,7 +21,8 @@ namespace FlashWpf
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IDatabase, AzureService>();
+            services.AddSingleton<IAzure, AzureService>();
+            services.AddSingleton<IFirebase, FirebaseService>();
             services.AddSingleton<IDynamicDB, DynamicDB>();
         }
 
@@ -31,7 +32,7 @@ namespace FlashWpf
 
             // Set up the IDynamicDB object
             var db = ServiceLocator.GetInstance<IDynamicDB>();
-            db.SetCurrentDB(ServiceLocator.GetInstance<IDatabase>());
+            db.SetCurrentDB(ServiceLocator.GetInstance<IFirebase>());
         }
 
     }

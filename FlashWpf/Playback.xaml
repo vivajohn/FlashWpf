@@ -14,14 +14,28 @@
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,0,8,0" Height="72" VerticalAlignment="Top">
-            <!--<Label Content="{Binding labelText}" Height="29" Width="Auto" Foreground="White" Margin="0,0,8,0" />-->
+        <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8,0,8,0" Height="56" VerticalAlignment="Top">
             <Button Click="Navigate_Click" IsEnabled="{Binding IsNotPlaying}" Height="42" Width="42" ToolTip="To recording page">
                 <materialDesign:PackIcon Kind="Microphone" Height="24" Width="24" />
             </Button>
-        </StackPanel>
+        </StackPanel>-->
+        <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="8,0,8,0" Height="56">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button HorizontalAlignment="Right" Height="42" Width="42" ToolTip="To playback page" Click="OnToggleDB">
+                    <materialDesign:PackIcon Kind="ToggleSwitch" Height="24" Width="24" />
+                </Button>
+                <TextBlock VerticalAlignment="Center" Margin="8,0,8,0" Foreground="White" Text="{Binding DBName[0]}"></TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <!--<Label Content="{Binding labelText}" Height="29" Width="Auto" Foreground="White" Margin="0,0,8,0" />-->
+                <Button Click="Navigate_Click" IsEnabled="{Binding IsNotPlaying}" Height="42" Width="42" ToolTip="To recording page">
+                    <materialDesign:PackIcon Kind="Microphone" Height="24" Width="24" />
+                </Button>
+            </StackPanel>
+        </Grid>
+            
 
-        <Grid Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,48,0,0">
+        <Grid Panel.ZIndex="3" VerticalAlignment="Top" Margin="0,32,0,0">
             <StackPanel Background="Black" Margin="0,24,0,24">
             </StackPanel>
 

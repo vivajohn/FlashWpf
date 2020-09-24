@@ -32,7 +32,7 @@ namespace FlashWpf
         }
 
         private Dictionary<long, List<PromptResponsePair>> cache;
-        private IDatabase fb;
+        private IDatabase db;
         private Topic currentTopic;
         public ObservableCollection<string> DBName { get; } = new ObservableCollection<string>();
 
@@ -42,13 +42,13 @@ namespace FlashWpf
             DataContext = this;
 
             var ddb = ServiceLocator.GetInstance<IDynamicDB>();
-            ddb.CurrentDB.Subscribe(fb => {
+            ddb.CurrentDB.Subscribe(db => {
                 // Get the top-level data
-                this.fb = fb;
+                this.db = db;
                 cache = new Dictionary<long, List<PromptResponsePair>>();
                 DBName.Clear();
-                DBName.Add(fb.Name);
-                fb.GetTopics(Globals.uid).Subscribe(topics =>
+                DBName.Add(db.Name);
+                db.GetTopics(Globals.uid).Subscribe(topics =>
                 {
                     if (topics.Count > 0)
                     {
@@ -84,7 +84,7 @@ namespace FlashWpf
 
             if (!cache.ContainsKey(ds.deck.id))
             {
-                fb.GetPairs(Globals.uid, ds.deck).Subscribe(pairs =>
+                db.GetPairs(Globals.uid, ds.deck).Subscribe(pairs =>
                 {
                     Dispatcher.Invoke(() =>
                     {
@@ -113,8 +113,8 @@ namespace FlashWpf
             deck.numPairs -= 1;
 
             source.pairs.Remove(pair);
-            fb.DeletePair(pair).Subscribe();
-            fb.SaveTopic(currentTopic);
+            db.DeletePair(pair).Subscribe();
+            db.SaveTopic(currentTopic);
         }
 
         // Add a new prompt-reponse pair.
@@ -123,22 +123,14 @@ namespace FlashWpf
             var ds = (sender as Button).DataContext as DeckSource;
             var pair = currentTopic.CreatePromptResponsePair(ds.deck);
             ds.pairs.Insert(0, pair);
-            fb.SaveTopic(currentTopic).Subscribe();
-            fb.SavePromptPairs(ds.deck.groups).Subscribe();
+            db.SaveTopic(currentTopic).Subscribe();
+            db.SavePromptPairs(ds.deck.groups).Subscribe();
         }
 
         // Toggle the database between Azure and Firebase
         private void OnToggleDB(object sender, RoutedEventArgs e)
         {
-            var ddb = ServiceLocator.GetInstance<IDynamicDB>();
-            if (fb.Name == "Azure")
-            {
-                ddb.SetCurrentDB(new FirebaseService());
-            }
-            else
-            {
-                ddb.SetCurrentDB(new AzureService());
-            }
+            DBChange.To((db.Name == "Azure") ? DBNames.Firebase : DBNames.Azure);
         }
     }
 }

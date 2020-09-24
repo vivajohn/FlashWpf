@@ -1,5 +1,6 @@
 ﻿using FlashCommon;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -63,6 +64,7 @@ namespace FlashWpf
                 }
             }
 
+            public ObservableCollection<string> DBName { get; } = new ObservableCollection<string>();
         }
 
 
@@ -78,6 +80,10 @@ namespace FlashWpf
             var ddb = ServiceLocator.GetInstance<IDynamicDB>();
             ddb.CurrentDB.Subscribe(db =>
             {
+                pageData.HasRecordings = false;
+                pageData.DBName.Clear();
+                pageData.DBName.Add(db.Name);
+
                 mgr = new PlaybackMgr(Globals.uid, db);
                 mgr.Recordings.Subscribe(recs =>
                 {
@@ -87,6 +93,12 @@ namespace FlashWpf
                     });
                 });
             });
+        }
+
+        // Toggle the database between Azure and Firebase
+        private void OnToggleDB(object sender, RoutedEventArgs e)
+        {
+            DBChange.To((pageData.DBName[0] == "Azure") ? DBNames.Firebase : DBNames.Azure);
         }
 
         public void Navigate_Click(object sender, RoutedEventArgs e)
@@ -154,6 +166,8 @@ namespace FlashWpf
                 players[i].MediaEnded += (s, e) => pageData.IsNotPlaying = true;
             }
         }
+
+
 
         private void NextPrompts(Boolean success)
         {
