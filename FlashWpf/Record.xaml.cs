@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -31,8 +32,9 @@ namespace FlashWpf
             }
         }
 
-        private Dictionary<long, List<PromptResponsePair>> cache;
+        private Dictionary<long, IList<PromptResponsePair>> cache;
         private IDatabase db;
+        private string uid;
         private Topic currentTopic;
         public ObservableCollection<string> DBName { get; } = new ObservableCollection<string>();
 
@@ -42,13 +44,17 @@ namespace FlashWpf
             DataContext = this;
 
             var ddb = ServiceLocator.GetInstance<IDynamicDB>();
-            ddb.CurrentDB.Subscribe(db => {
-                // Get the top-level data
+            ddb.CurrentDB.SelectMany(db =>
+            {
                 this.db = db;
-                cache = new Dictionary<long, List<PromptResponsePair>>();
+                return db.CurrentUserId;
+            }).Subscribe(uid => {
+                // Get the top-level data
+                this.uid = uid;
+                cache = new Dictionary<long, IList<PromptResponsePair>>();
                 DBName.Clear();
-                DBName.Add(db.Name);
-                db.GetTopics(Globals.uid).Subscribe(topics =>
+                DBName.Add(db.Name.ToString());
+                db.GetTopics(uid).Subscribe(topics =>
                 {
                     if (topics.Count > 0)
                     {
@@ -84,12 +90,12 @@ namespace FlashWpf
 
             if (!cache.ContainsKey(ds.deck.id))
             {
-                db.GetPairs(Globals.uid, ds.deck).Subscribe(pairs =>
+                db.GetPairs(uid, ds.deck).Subscribe(pairs =>
                 {
                     Dispatcher.Invoke(() =>
                     {
                         cache[ds.deck.id] = pairs.groups;
-                        pairs.groups.ForEach(pair => ds.pairs.Add(pair));
+                        foreach (var pair in pairs.groups) ds.pairs.Add(pair);
                     });
                 });
                 return;
@@ -97,7 +103,7 @@ namespace FlashWpf
 
             if (ds.pairs.Count == 0)
             {
-                cache[ds.deck.id].ForEach(pair => ds.pairs.Add(pair));
+                foreach (var pair in cache[ds.deck.id]) ds.pairs.Add(pair);
                 return;
             }
         }
@@ -124,13 +130,13 @@ namespace FlashWpf
             var pair = currentTopic.CreatePromptResponsePair(ds.deck);
             ds.pairs.Insert(0, pair);
             db.SaveTopic(currentTopic).Subscribe();
-            db.SavePromptPairs(ds.deck.groups).Subscribe();
+            db.SavePromptPair(pair).Subscribe();
         }
 
         // Toggle the database between Azure and Firebase
         private void OnToggleDB(object sender, RoutedEventArgs e)
         {
-            DBChange.To((db.Name == "Azure") ? DBNames.Firebase : DBNames.Azure);
+            DBChange.To(db.Name == DBNames.Azure ? DBNames.Firebase : DBNames.Azure);
         }
     }
 }

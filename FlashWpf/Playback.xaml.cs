@@ -1,4 +1,5 @@
 ﻿using FlashCommon;
+using Google.Protobuf;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -31,17 +32,6 @@ namespace FlashWpf
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             }
 
-            private string _labelText;
-            public string labelText
-            {
-                get { return _labelText; }
-                set
-                {
-                    _labelText = value;
-                    OnPropertyChanged();
-                }
-            }
-
             private bool _IsNotPlaying = true;
             public bool IsNotPlaying
             {
@@ -64,7 +54,7 @@ namespace FlashWpf
                 }
             }
 
-            public ObservableCollection<string> DBName { get; } = new ObservableCollection<string>();
+            public ObservableCollection<string> DBNames { get; } = new ObservableCollection<string>();
         }
 
 
@@ -78,13 +68,14 @@ namespace FlashWpf
             DataContext = pageData;
 
             var ddb = ServiceLocator.GetInstance<IDynamicDB>();
+            ddb.Connect();
             ddb.CurrentDB.Subscribe(db =>
             {
                 pageData.HasRecordings = false;
-                pageData.DBName.Clear();
-                pageData.DBName.Add(db.Name);
+                pageData.DBNames.Clear();
+                pageData.DBNames.Add(db.Name.ToString());
 
-                mgr = new PlaybackMgr(Globals.uid, db);
+                mgr = new PlaybackMgr(db);
                 mgr.Recordings.Subscribe(recs =>
                 {
                     Dispatcher.Invoke(() =>
@@ -98,7 +89,7 @@ namespace FlashWpf
         // Toggle the database between Azure and Firebase
         private void OnToggleDB(object sender, RoutedEventArgs e)
         {
-            DBChange.To((pageData.DBName[0] == "Azure") ? DBNames.Firebase : DBNames.Azure);
+            DBChange.To((pageData.DBNames[0] == "Azure") ? DBNames.Firebase : DBNames.Azure);
         }
 
         public void Navigate_Click(object sender, RoutedEventArgs e)
@@ -117,14 +108,13 @@ namespace FlashWpf
             }
             SetRecording(0, recs[0]);
             SetRecording(1, recs[1]);
-            pageData.labelText = mgr.CurrentPair.prompts[0].text;
         }
 
         private void SetRecording(int i, FirestoreBlob blob)
         {
             Stop(i);
 
-            byte[] ba = blob.data.ToByteArray();
+            byte[] ba = ByteString.FromBase64(blob.data64).ToByteArray();
 
             var tempPath = Path.GetTempPath();
             var mediaPath = $"{tempPath}wpfflash{i}.mp3";
